@@ -1,0 +1,159 @@
+from __future__ import annotations
+
+from typing import Iterable, Any
+import math
+
+
+
+
+def dominant_window_extremes(values: Any, n_parts: int = 16) -> dict[str, list[int]]:
+    """
+    Divide a entrada em `n_parts` janelas aproximadamente iguais e compara
+    janelas consecutivas para eleger extremos dominantes.
+
+    Regras por comparação entre duas janelas consecutivas:
+      - mínimo dominante = menor entre os mínimos das duas janelas
+      - máximo dominante = maior entre os máximos das duas janelas
+
+    Ao avançar a comparação, o extremo dominante anterior é substituído
+    pelo novo dominante. No fim, a função retorna a sequência de mudanças
+    de dominância, sem manter o extremo anterior quando ele é superado.
+
+    Parâmetros
+    ----------
+    values : list | tuple | np.ndarray | pd.Series
+        Sequência numérica de entrada.
+    n_parts : int
+        Número de janelas desejado. O tamanho da janela será len(values) // n_parts.
+
+    Retorno
+    -------
+    dict[str, list[int]]
+        {
+            "min_positions": [...],
+            "max_positions": [...]
+        }
+
+    Observação
+    ----------
+    Os índices retornados são relativos à série original.
+    """
+    arr = _to_1d_list(values)
+
+    if len(arr) < 2:
+        return {"min_positions": [], "max_positions": []}
+
+    if n_parts <= 0:
+        raise ValueError("n_parts deve ser maior que 0.")
+
+    window_size = len(arr) // n_parts
+    if window_size == 0:
+        raise ValueError(
+            f"Entrada muito pequena para n_parts={n_parts}. "
+            f"len(values)={len(arr)} gera window_size=0."
+        )
+
+    windows = _build_windows(arr, window_size)
+    if len(windows) < 2:
+        return {"min_positions": [], "max_positions": []}
+
+    min_positions: list[int] = []
+    max_positions: list[int] = []
+
+    current_min_pos: int | None = None
+    current_max_pos: int | None = None
+
+    for i in range(len(windows) - 1):
+        w1_start, w1 = windows[i]
+        w2_start, w2 = windows[i + 1]
+
+        min1_local = _argmin(w1)
+        min2_local = _argmin(w2)
+        max1_local = _argmax(w1)
+        max2_local = _argmax(w2)
+
+        min1_global = w1_start + min1_local
+        min2_global = w2_start + min2_local
+        max1_global = w1_start + max1_local
+        max2_global = w2_start + max2_local
+
+        # menor mínimo vence
+        if arr[min1_global] < arr[min2_global]:
+            chosen_min = min1_global
+        else:
+            chosen_min = min2_global
+
+        # maior máximo vence
+        if arr[max1_global] > arr[max2_global]:
+            chosen_max = max1_global
+        else:
+            chosen_max = max2_global
+
+        # sobrescreve o anterior se o dominante mudou
+        if current_min_pos != chosen_min:
+            if current_min_pos is not None and min_positions and min_positions[-1] == current_min_pos:
+                min_positions.pop()
+            min_positions.append(chosen_min)
+            current_min_pos = chosen_min
+
+        if current_max_pos != chosen_max:
+            if current_max_pos is not None and max_positions and max_positions[-1] == current_max_pos:
+                max_positions.pop()
+            max_positions.append(chosen_max)
+            current_max_pos = chosen_max
+
+    return {
+        "min_positions": min_positions,
+        "max_positions": max_positions,
+    }
+
+
+def _to_1d_list(values: Any) -> list[float]:
+    """Converte a entrada para lista 1D."""
+    if pd is not None:
+        if isinstance(values, pd.Series):
+            return values.tolist()
+        if isinstance(values, pd.DataFrame):
+            if values.shape[1] != 1:
+                raise ValueError(
+                    "DataFrame deve ter exatamente 1 coluna, ou passe uma Series."
+                )
+            return values.iloc[:, 0].tolist()
+
+    if np is not None and isinstance(values, np.ndarray):
+        if values.ndim != 1:
+            raise ValueError("np.ndarray deve ser 1D.")
+        return values.tolist()
+
+    if isinstance(values, (list, tuple)):
+        return list(values)
+
+    raise TypeError(
+        "Tipo de entrada não suportado. Use list, tuple, np.ndarray, pd.Series ou DataFrame de 1 coluna."
+    )
+
+
+def _build_windows(arr: list[float], window_size: int) -> list[tuple[int, list[float]]]:
+    """
+    Cria janelas contíguas.
+    Retorna lista de tuplas: (posição_inicial_global, sublista).
+    """
+    windows: list[tuple[int, list[float]]] = []
+
+    for start in range(0, len(arr), window_size):
+        end = min(start + window_size, len(arr))
+        chunk = arr[start:end]
+        if chunk:
+            windows.append((start, chunk))
+
+    return windows
+
+
+def _argmin(seq: list[float]) -> int:
+    """Índice local do menor valor."""
+    return min(range(len(seq)), key=lambda i: seq[i])
+
+
+def _argmax(seq: list[float]) -> int:
+    """Índice local do maior valor."""
+    return max(range(len(seq)), key=lambda i: seq[i])
