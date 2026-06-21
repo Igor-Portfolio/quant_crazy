@@ -17,6 +17,8 @@ a = len(df.index)
 x = np.arange(len(df.index))
 y = df[('JNJ', 'Close')].values
 
+print(type(y))
+print(type(x))
 pass
 # coeficients = lg.coef(x, y, len(df.index))
 # f = lg.polynomial_value(coeficients)
@@ -30,7 +32,7 @@ pass
 # y_derivate = dp(x)
 
 
-
+'''
 pass
 
 plt.plot(x,y, color="red")
@@ -39,4 +41,4 @@ plt.plot(x,y, color="red")
 plt.show()
 plt.savefig("grafico.png", dpi=150, bbox_inches="tight")
 plt.close()
-
+'''

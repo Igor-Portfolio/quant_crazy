@@ -1,3 +1,20 @@
 Ã ideia inicial e de criar uma janela que anda para a direita com o intuito de identificar os pontos
 maximos de evolução temporal de uma ação.
 
+Minha ideia é criar uma janela que vai da direita para esquerda, e dentro dos intervalos a ideia e verificar se
+os valores maximos ou minimos nao estao nas bordas dos intervalos. Se estiverem no meio do intervalo serao considerados
+maximos ou minimos.
+
+O real desavio sera em pensar qual deve ser o tamanho ideal do intervalo. Onde tem diferença de fato. E como automatizar
+esse processo.
+
+Para regressões polinomias serao identificados 2 cumes seguidos, ou um cume e um vale. (Ainda a ser decidido)
+E sera aplicado uma regressão polimial de grau impar maior que 3 (Ainda a ser decidido). A analise da segunda derivada
+pode nos da uma boa ideia de qnd começar a comprar.
+
+Por fim deve se definir a melhor estrategia de compras e vendas, tentar entender quando se deve colocar mais peso na
+decisão de compra ou vendo.
+
+No final conciliar decisões com base em Portfolio de açoes.
+
+Obs: Melhor usar açoes de empresas mais consolidadas e talvez em mercados ciclicos.
