@@ -157,3 +157,33 @@ def _argmin(seq: list[float]) -> int:
 def _argmax(seq: list[float]) -> int:
     """Índice local do maior valor."""
     return max(range(len(seq)), key=lambda i: seq[i])
+
+
+
+    ###############################
+
+print(type(y))
+print(type(x))
+pass
+# coeficients = lg.coef(x, y, len(df.index))
+# f = lg.polynomial_value(coeficients)
+
+# y_valores = f(x)
+
+#derivada
+# dp_coef = np.polyder(coeficients)
+# dp = np.poly1d(dp_coef)
+
+# y_derivate = dp(x)
+
+
+'''
+pass
+
+plt.plot(x,y, color="red")
+# plt.plot(x,y_valores, color="blue")
+# plt.plot(x,y_derivate, color="orange")
+plt.show()
+plt.savefig("grafico.png", dpi=150, bbox_inches="tight")
+plt.close()
+'''
