@@ -1,0 +1,18 @@
+topicos:
+
+processamento de sinais financeiros
+Filtragem e Suavização: Filtro de Kalman (Kalman Filter), Filtro Savitzky-Golay, e Transformada de Wavelet (Wavelets).
+Detecção de Pontos de Inflexão / Picos: Peak Detection Algorithms e Prominence.
+
+
+Algoritmos de ZigZag e Regressão por PartesSegmentação de Séries Temporais: Algoritmos como Piecewise Linear Approximation (PLA) e o algoritmo clássico de ZigZag. Eles definem topos e fundos não por tempo fixo, mas por variação percentual ou de volatilidade (ex: $X\%$ de movimento mínimo).
+
+
+Engenharia de Features e Volatilidade
+Métricas Adaptativas de Volatilidade: Average True Range (ATR) e Bandas de Bollinger para ajustar o tamanho das janelas de forma dinâmica (quando o mercado tá muito volátil a janela encolhe; quando tá calmo, a janela expande).
+Estationaridade: Diferenciação Fracionária (Fractional Differentiation). Preço puro não é estacionário (é um random walk). Você precisa transformar a série para que os algoritmos consigam aprender padrões sem perder a "memória" do preço.
+
+
+Event-Based Sampling (Amostragem baseada em Eventos)Em vez de olhar o mercado a cada $N$ dias ou $N$ minutos, você divide os dados por Eventos: barras de volume (Volume Bars), barras de tick (Tick Bars) ou barras de variação de preço (Dollar/Range Bars). Isso elimina a rigidez do tempo cronológico.
+
+
